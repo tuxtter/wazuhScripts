@@ -1,0 +1,27 @@
+#Agregar en /var/ossec/etc/shared/default/win_audit_rcl.txt en el servidor.
+#Al momento de guardar los cambios en este archivo en el servidor, los agentes son reiniciados para aplicar los cambios.
+#Pasa algo de que se detiene el servicio de OssecSVC en los agentes. Supongo que es por el feature de Anti-flooding mechanism.
+#Esto sucede cuando los archivos a escanear o revisar son demasiados.
+$home_dir=C:\Users;
+# Detect possible SSNs
+#[Possible Unencrypted Social Security Number Detected] [any] []
+#d:$home_dir -> r:^\. -> r:\d\d\d-\d\d-\d\d\d\d;
+
+# Detect possible PANs
+[Possible Unencrypted PANs - Primary Account Number - Credit Card VISA] [any] []
+d:$home_dir -> r:txt$|log$|json$|xml$|pdf$|doc$|docx$|xls$|xlsx$|ppt|$pptx$ -> r:4\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d;
+
+[Possible Unencrypted PANs - Primary Account Number - Credit Card MasterCard] [any] []
+d:$home_dir -> r:txt$|log$|json$|xml$|pdf$|doc$|docx$|xls$|xlsx$|ppt|$pptx$ -> r:51\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|52\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|53\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|54\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|55\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|222\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|223\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|224\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|225\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|226\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|227\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|228\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|229\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|23\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|24\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|25\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|26\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|270\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|271\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|2720\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d;
+
+[Possible Unencrypted PANs - Primary Account Number - Credit Card AMEX] [any] []
+d:$home_dir -> r:txt$|log$|json$|xml$|pdf$|doc$|docx$|xls$|xlsx$|ppt|$pptx$ -> r:34\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d|37\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d;
+
+[Possible Unencrypted PANs - Primary Account Number - Credit Card Diners Club] [any] []
+d:$home_dir -> r:txt$|log$|json$|xml$|pdf$|doc$|docx$|xls$|xlsx$|ppt|$pptx$ -> r:300\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d|301\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d|302\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d|303\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d|304\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d|305\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d|36\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d|38\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d;
+
+[Possible Unencrypted PANs - Primary Account Number - Credit Card Discover] [any] []
+d:$home_dir -> r:txt$|log$|json$|xml$|pdf$|doc$|docx$|xls$|xlsx$|ppt|$pptx$ -> r:6011\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d|65\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d;
+
+[Possible Unencrypted PANs - Primary Account Number - Credit Card JCB] [any] []
+d:$home_dir -> r:txt$|log$|json$|xml$|pdf$|doc$|docx$|xls$|xlsx$|ppt|$pptx$ -> r:2131\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d|1800\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d|35\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d\p*\s*\d\d\d\d;
