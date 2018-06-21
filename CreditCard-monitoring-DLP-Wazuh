@@ -69,7 +69,7 @@ $home_dir=C:\Users;
 #pero no funcionan porque segun entendi en la documentacion de Wazuh, se trata de hacer que se lean regex de la forma mas simple posible para hacer el proceso mas rapido.
 #Bueno primero fui a la documentacion de Wazuh, con respecto a la parte de regex:
 #https://documentation.wazuh.com/2.0/user-manual/ruleset/ruleset-xml-syntax/regex.html
-#Supongo que alguien mas experimentado si le entiende, pero no lograria formar las regex, asi que me fui al origen:
+#Supongo que alguien mas experimentado si le entiende, pero yo no logre formar las regex con esa info, asi que me fui al origen:
 #https://github.com/ossec/ossec-hids/tree/master/src/os_regex
 #Ahi observe lo siguiente:
 #Each regular expression can be followed by:
