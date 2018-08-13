@@ -2,6 +2,7 @@
 #Debes primero modificar la linea donde esta el PASSWORD que usaran los agentes para autenticarse.
 yum update -y
 yum upgrade -y
+yum -y install net-tools
 cat > /etc/yum.repos.d/wazuh.repo <<\EOF
 [wazuh_repo]
 gpgcheck=1
@@ -11,7 +12,7 @@ name=Wazuh repository
 baseurl=https://packages.wazuh.com/3.x/yum/
 protect=1
 EOF
-curl -Lo jdk-8u181-linux-x64.rpm --header "Cookie: oraclelicense=accept-securebackup-cookie" "https://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jre-8u181-linux-x64.rpm"
+curl -Lo jre-8u181-linux-x64.rpm --header "Cookie: oraclelicense=accept-securebackup-cookie" "https://download.oracle.com/otn-pub/java/jdk/8u181-b13/96a7b8442fe848ef90c96a2fad6ed6d1/jre-8u181-linux-x64.rpm"
 rpm -ivh jre-8u181-linux-x64.rpm
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 echo "[logstash-6.x]
@@ -24,12 +25,9 @@ autorefresh=1
 type=rpm-md" > /etc/yum.repos.d/elasticsearch.repo
 yum update -y
 yum -y install elasticsearch-6.3.2 kibana-6.3.2 logstash-6.3.2
-chkconfig --add kibana
-chkconfig --add logstash
-chkconfig --add elasticsearch
-chkconfig logstash on
-chkconfig elasticsearch on
-chkconfig kibana on
+systemctl enable logstash.service
+systemctl enable kibana.service
+systemctl enable elasticsearch.service
 /usr/share/logstash/bin/logstash-plugin install logstash-output-email
 echo "cluster.name: elk01
 node.name: elk01-nodo01
@@ -42,8 +40,6 @@ CONF_DIR=/etc/elasticsearch
 DATA_DIR=/var/lib/elasticsearch
 LOG_DIR=/var/log/elasticsearch
 PID_DIR=/var/run/elasticsearch
-ES_USER=elasticsearch
-ES_GROUP=elasticsearch
 ES_STARTUP_SLEEP_TIME=5
 MAX_OPEN_FILES=9965536" >> /etc/sysconfig/elasticsearch
 echo 'server.port: 5601
@@ -73,7 +69,7 @@ python --version
 netstat -tapn | grep LISTEN
 yum -y install wazuh-api
 service wazuh-api status
-curl https://raw.githubusercontent.com/wazuh/wazuh/3.5/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
+curl -s https://raw.githubusercontent.com/wazuh/wazuh/3.5/extensions/elasticsearch/wazuh-elastic6-template-alerts.json | curl -XPUT 'http://localhost:9200/_template/wazuh' -H 'Content-Type: application/json' -d @-
 curl -so /etc/logstash/conf.d/01-wazuh.conf https://raw.githubusercontent.com/wazuh/wazuh/3.5/extensions/logstash/01-wazuh-local.conf
 chown logstash:logstash /etc/logstash/conf.d/01-wazuh.conf
 usermod -a -G ossec logstash
@@ -83,10 +79,12 @@ export NODE_OPTIONS="--max-old-space-size=3072"
 sed -i "s/^enabled=1/enabled=0/" /etc/yum.repos.d/elasticsearch.repo
 node /var/ossec/api/configuration/auth/htpasswd -c /var/ossec/api/configuration/auth/user manager
 service wazuh-api restart
-echo "PASSWORD" /var/ossec/etc/authd.pass
+echo "PASSWORD" > /var/ossec/etc/authd.pass
 /var/ossec/bin/ossec-authd -i -P -a
 firewall-cmd --permanent --add-port=1515/tcp
 firewall-cmd --permanent --add-port=1514/udp
 firewall-cmd --reload
+service logstash start
+service kibana restart
 service logstash start
 service kibana restart
