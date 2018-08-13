@@ -80,11 +80,9 @@ sed -i "s/^enabled=1/enabled=0/" /etc/yum.repos.d/elasticsearch.repo
 node /var/ossec/api/configuration/auth/htpasswd -c /var/ossec/api/configuration/auth/user manager
 service wazuh-api restart
 echo "PASSWORD" > /var/ossec/etc/authd.pass
-/var/ossec/bin/ossec-authd -i -P -a
+/var/ossec/bin/ossec-authd -P -a
 firewall-cmd --permanent --add-port=1515/tcp
 firewall-cmd --permanent --add-port=1514/udp
 firewall-cmd --reload
-service logstash start
-service kibana restart
 service logstash start
 service kibana restart
