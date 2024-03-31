@@ -1,4 +1,18 @@
 # Add credit card data monitoring with Wazuh for DLP
+
+## Activar modulo rootcheck Windos Audit
+Agregar lo siguiente en la configuracion compartida del grupo al que se desea activar el modulo rootcheck en la interfaz web ir a Agents -> DEfault -> Files -> Editar agent.conf y agregar esto:
+
+```
+<agent_config>
+	<!-- Shared agent configuration here -->
+	<rootcheck>
+		<disabled>no</disabled>
+		<windows_audit>./shared/win_audit_rcl.txt</windows_audit>
+	</rootcheck>
+</agent_config>
+```
+
 ## Reglas
 Para monitorear datos sensibles (Datos de tarjetas de credito) en equipos Windows/Linux
 Agregar reglas en **/var/ossec/etc/rules/local_rules.xml** en el servidor Wazuh u OSSEC
